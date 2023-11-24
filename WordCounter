@@ -1,0 +1,138 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.StringTokenizer;
+
+public class wordCounter extends JFrame {
+    private JTextPane inputTextPane;
+
+    public wordCounter() {
+        setTitle("Counter");
+        setSize(500, 400);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+
+        // Create components
+        inputTextPane = new JTextPane();
+
+        JButton countWordButton = new JButton("Count Words");
+        JButton countLetterButton = new JButton("Count Letters");
+        JButton countSentenceButton = new JButton("Count Sentences");
+
+        countWordButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                countAndDisplayWords();
+            }
+        });
+
+        countLetterButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                countAndDisplayLetters();
+            }
+        });
+
+        countSentenceButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                countAndDisplaySentences();
+            }
+        });
+
+        // Set button sizes and add light colors
+        countWordButton.setPreferredSize(new Dimension(150, 40));
+        countLetterButton.setPreferredSize(new Dimension(150, 40));
+        countSentenceButton.setPreferredSize(new Dimension(150, 40));
+
+        Font buttonFont = new Font("Arial", Font.ITALIC, 14);
+        countWordButton.setFont(buttonFont);
+        countLetterButton.setFont(buttonFont);
+        countSentenceButton.setFont(buttonFont);
+
+        inputTextPane.setBackground(new Color(195, 195, 215));
+
+        countWordButton.setBackground(new Color(220, 155, 155));
+        countLetterButton.setBackground(new Color(220, 155, 155));
+        countSentenceButton.setBackground(new Color(220, 155, 155));
+
+        setLayout(new BorderLayout());
+        JPanel inputPanel = new JPanel(new BorderLayout());
+        inputPanel.add(new JLabel("  ENTER TEXT "), BorderLayout.NORTH);
+
+        JScrollPane scrollPane = new JScrollPane(inputTextPane);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_ALWAYS);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+        inputPanel.add(scrollPane, BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        buttonPanel.add(countWordButton);
+        buttonPanel.add(countLetterButton);
+        buttonPanel.add(countSentenceButton);
+
+        add(inputPanel, BorderLayout.CENTER);
+        add(buttonPanel, BorderLayout.SOUTH);
+    }
+
+    private void countAndDisplayWords() {
+        String text = inputTextPane.getText();
+        int wordCount = countWords(text);
+        displayResult("Word count: " + wordCount);
+    }
+
+    private void countAndDisplayLetters() {
+        String text = inputTextPane.getText();
+        int letterCount = countLetters(text);
+        int uppercaseCount = countUppercaseLetters(text);
+        int lowercaseCount = countLowercaseLetters(text);
+
+        String resultText = "Letter count: " + letterCount + "\n"
+                + "Uppercase count: " + uppercaseCount + "\n"
+                + "Lowercase count: " + lowercaseCount;
+
+        displayResult(resultText);
+    }
+
+    private void countAndDisplaySentences() {
+        String text = inputTextPane.getText();
+        int sentenceCount = countSentences(text);
+        displayResult("Sentence count: " + sentenceCount);
+    }
+
+    private void displayResult(String resultText) {
+        // Display the results in a JOptionPane
+        JOptionPane.showMessageDialog(this, resultText, "Results", JOptionPane.INFORMATION_MESSAGE);
+    }
+
+    private int countWords(String text) {
+        StringTokenizer tokenizer = new StringTokenizer(text);
+        return tokenizer.countTokens();
+    }
+
+    private int countLetters(String text) {
+        return text.replaceAll("[^a-zA-Z]", "").length();
+    }
+
+    private int countUppercaseLetters(String text) {
+        return text.replaceAll("[^A-Z]", "").length();
+    }
+
+    private int countLowercaseLetters(String text) {
+        return text.replaceAll("[^a-z]", "").length();
+    }
+
+    private int countSentences(String text) {
+        StringTokenizer tokenizer = new StringTokenizer(text, ".!?");
+        return tokenizer.countTokens();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new wordCounter().setVisible(true);
+            }
+        });
+    }
+}
